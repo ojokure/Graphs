@@ -3,43 +3,86 @@ Simple graph implementation
 """
 from util import Stack, Queue  # These may come in handy
 
+
 class Graph:
 
     """Represent a graph as a dictionary of vertices mapping labels to edges."""
+
+    # constructor
     def __init__(self):
-        self.vertices = {}
+        self.vertices = {}  # adjacency list (dictionary)
+        # self.vertices = [[],[],[]] # adjacency matrix (2d list or array)
 
     def add_vertex(self, vertex_id):
         """
         Add a vertex to the graph.
         """
-        pass  # TODO
+        self.vertices[vertex_id] = set()
 
     def add_edge(self, v1, v2):
-        """
-        Add a directed edge to the graph.
-        """
-        pass  # TODO
+        # check that keys(v1 and v2) exist in the vertices dictionary
+        if v1 in self.vertices and v2 in self.vertices:
+            # add v2 to the vertices at v1
+            self.vertices[v1].add(v2)
+            # # add v1 to the vertices at v2 bidirectional or undirected
+            # self.vertices[v2].add(v1)
+        # otherwise
+        else:
+            # raise and exception and give an error
+            raise IndexError("That vertex does not exist")
 
     def get_neighbors(self, vertex_id):
         """
         Get all neighbors (edges) of a vertex.
         """
-        pass  # TODO
+        return self.vertices[vertex_id]
 
     def bft(self, starting_vertex):
         """
         Print each vertex in breadth-first order
         beginning from starting_vertex.
         """
-        pass  # TODO
+        queue = Queue()
+        # create empty queue enqueue the starting vertex id
+        queue.enqueue(starting_vertex)
+        # create a set to store our visited vertices
+        visited = set()
 
-    def dft(self, starting_vertex):
-        """
-        Print each vertex in depth-first order
-        beginning from starting_vertex.
-        """
-        pass  # TODO
+        # while queue is not empty (len greater than 0)
+        while queue.size() > 0:
+            # dequeue the first vertex
+            visited_node = queue.dequeue()
+            # if that vertex has not been visited
+            if visited_node not in visited:
+                # mark as visited and print
+                visited.add(visited_node)
+                print(visited_node)
+                # iterate over the child vertices of the current vertex
+                for next_vertex in self.vertices[visited_node]:
+                    # enqueue the next vertex
+                    queue.enqueue(next_vertex)
+
+    def dft(self, starting_vertex_id):
+        stack = Stack()
+        # create empty stack push the starting vertex id
+
+        stack.push(starting_vertex_id)
+        # create a set to store our visited vertices
+        visited = set()
+
+        # while stack is not empty (len greater than 0)
+        while stack.size() > 0:
+            # pop the first vertex
+            visited_node = stack.pop()
+            # if that vertex has not been visited
+            if visited_node not in visited:
+                # mark as visited and print for debugging
+                visited.add(visited_node)
+                print(visited_node)  # for debugging
+                # iterate over the child vertices of the current vertex
+                for next_vertex in self.vertices[visited_node]:
+                    # push the next vertex
+                    stack.push(next_vertex)
 
     def dft_recursive(self, starting_vertex):
         """
@@ -75,6 +118,7 @@ class Graph:
         This should be done using recursion.
         """
         pass  # TODO
+
 
 if __name__ == '__main__':
     graph = Graph()  # Instantiate your graph
@@ -142,4 +186,4 @@ if __name__ == '__main__':
         [1, 2, 4, 7, 6]
     '''
     print(graph.dfs(1, 6))
-    print(graph.dfs_recursive(1, 6))
+    # print(graph.dfs_recursive(1, 6))
