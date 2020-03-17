@@ -124,14 +124,16 @@ class Graph:
             vertex = path[-1]
 
             if vertex not in visited:
-                if vertex == starting_vertex:
+                if vertex == destination_vertex:
                     return path
 
                 visited.add(vertex)
 
             for next_vertex in self.vertices[vertex]:
 
-                updated_path = list(path)
+                # updated_path = list(path)
+                # updated_path = path[:]
+                updated_path = path.copy()
                 updated_path.append(next_vertex)
                 queue.enqueue(updated_path)
 
@@ -141,7 +143,29 @@ class Graph:
         starting_vertex to destination_vertex in
         depth-first order.
         """
-        pass  # TODO
+        stack = Stack()
+        stack.push([starting_vertex])
+
+        visited = set()
+
+        while stack.size() > 0:
+            path = stack.pop()
+            vertex = path[-1]
+
+            if vertex not in visited:
+                if vertex == destination_vertex:
+                    return path
+
+            visited.add(vertex)
+
+            edges = self.get_neighbors(vertex)
+
+            for edge in edges:
+                # updated_path = list(path)
+                # updated_path = path.copy()
+                updated_path = path[:]
+                updated_path.append(edge)
+                stack.push(updated_path)
 
     def dfs_recursive(self, starting_vertex):
         """
