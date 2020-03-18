@@ -194,8 +194,10 @@ class Graph:
             if edge not in visited:
                 updated_path = self.dfs_recursive(
                     edge, destination_vertex, visited, path)
+
                 if updated_path:
                     return updated_path
+
         return None
 
 
@@ -265,4 +267,4 @@ if __name__ == '__main__':
         [1, 2, 4, 7, 6]
     '''
     print(graph.dfs(1, 6))
-    # print(graph.dfs_recursive(1, 6))
+    print(graph.dfs_recursive(1, 6))
