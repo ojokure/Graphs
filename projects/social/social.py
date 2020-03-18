@@ -128,9 +128,17 @@ class SocialGraph:
 
 if __name__ == '__main__':
     sg = SocialGraph()
-    sg.populate_graph(10, 2)
+    sg.populate_graph(1000, 5)
     print("print friendships")
     print(sg.friendships)
     connections = sg.get_all_social_paths(1)
     print("print connections")
     print(connections)
+    print(f"user in extended social network :{len(connections) - 1}")
+
+    total_social_path = 0
+
+    for user_id in connections:
+        total_social_path += len(connections[user_id])
+
+    print(f"average social path :{total_social_path//len(connections)}")
