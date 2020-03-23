@@ -1,6 +1,27 @@
+import random
+
+
+class Queue:
+    def __init__(self):
+        self.storage = []
+
+    def enqueue(self, value):
+        self.storage.append(value)
+
+    def dequeue(self):
+        if self.size() > 0:
+            return self.storage.pop(0)
+        else:
+            return None
+
+    def size(self):
+        return len(self.storage)
+
+
 class User:
     def __init__(self, name):
         self.name = name
+
 
 class SocialGraph:
     def __init__(self):
@@ -32,10 +53,8 @@ class SocialGraph:
         """
         Takes a number of users and an average number of friendships
         as arguments
-
         Creates that number of users and a randomly distributed friendships
         between those users.
-
         The number of users must be greater than the average number of friendships.
         """
         # Reset graph
@@ -45,8 +64,35 @@ class SocialGraph:
         # !!!! IMPLEMENT ME
 
         # Add users
+        # iterate over 0 to num users...
+        for i in range(0, num_users):
+            # add user using an f-string
+            self.add_user(f"User {i}")
 
         # Create friendships
+        # generate all possible friendship combinations
+        possible_friendships = []
+
+        # avoid dups by making sure the first number is smaller than the second
+        # iterate over user id in users...
+        for user_id in self.users:
+            # iterate over friend id in in a range from user id + 1 to last id + 1...
+            for friend_id in range(user_id + 1, self.last_id + 1):
+                # append a user id and friend id tuple to the possible friendships
+                possible_friendships.append((user_id, friend_id))
+
+        # shuffle friendships random import
+        random.shuffle(possible_friendships)
+
+        # create friendships for the first N pairs of the list
+        # N is determined by the formula: num users * avg friendships // 2
+        # NOTE: need to divide by 2 since each add_friendship() creates 2 friendships
+        # iterate over a range using the formula as the end base...
+        for i in range(num_users * avg_friendships // 2):
+            # set friendship to possible friendships at i
+            friendship = possible_friendships[i]
+            # add friendship of frienship[0], friendship[1]
+            self.add_friendship(friendship[0], friendship[1])
 
     def get_all_social_paths(self, user_id):
         """
@@ -59,12 +105,40 @@ class SocialGraph:
         """
         visited = {}  # Note that this is a dictionary, not a set
         # !!!! IMPLEMENT ME
+
+        queue = Queue()
+
+        queue.enqueue([user_id])
+
+        while queue.size() > 0:
+            path = queue.dequeue()
+
+            vertex = path[-1]
+
+            if vertex not in visited:
+                visited[vertex] = path
+
+                for edge in self.friendships[vertex]:
+                    updated_path = path[:]
+                    updated_path.append(edge)
+                    queue.enqueue(updated_path)
+
         return visited
 
 
 if __name__ == '__main__':
     sg = SocialGraph()
-    sg.populate_graph(10, 2)
+    sg.populate_graph(1000, 5)
+    print("print friendships")
     print(sg.friendships)
     connections = sg.get_all_social_paths(1)
+    print("print connections")
     print(connections)
+    print(f"user in extended social network :{len(connections) - 1}")
+
+    total_social_path = 0
+
+    for user_id in connections:
+        total_social_path += len(connections[user_id])
+
+    print(f"average social path :{total_social_path//len(connections)}")
